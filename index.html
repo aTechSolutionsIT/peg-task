@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Peg Task</title>
+
+<style>
+body {
+  font-family: Arial;
+  text-align: center;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 80px);
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.peg {
+  width: 80px;
+  height: 80px;
+  border: 1px solid #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.bar {
+  width: 10px;
+  height: 50px;
+  background: black;
+  transform: rotate(0deg);
+}
+
+.active {
+  outline: 3px solid blue;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Peg Turning Task</h2>
+<p>Click the highlighted peg repeatedly. Continue until time ends.</p>
+<div id="timer">03:00</div>
+
+<div class="grid" id="grid"></div>
+
+<script>
+let current = 0;
+let rotations = Array(8).fill(0);
+
+const grid = document.getElementById("grid");
+
+for (let i = 0; i < 8; i++) {
+  const peg = document.createElement("div");
+  peg.className = "peg";
+
+  const bar = document.createElement("div");
+  bar.className = "bar";
+
+  peg.appendChild(bar);
+  grid.appendChild(peg);
+
+  peg.onclick = () => {
+    if (i !== current) return;
+
+    rotations[i] += 90;
+    bar.style.transform = `rotate(${rotations[i]}deg)`;
+
+    if (rotations[i] >= 360) {
+      rotations[i] = 0;
+      bar.style.transform = "rotate(0deg)";
+      current = (current + 1) % 8;
+      updateActive();
+    }
+  };
+}
+
+function updateActive() {
+  document.querySelectorAll(".peg").forEach((p, i) => {
+    p.classList.toggle("active", i === current);
+  });
+}
+
+updateActive();
+
+let time = 180;
+const timerEl = document.getElementById("timer");
+
+setInterval(() => {
+  time--;
+  let m = Math.floor(time / 60);
+  let s = time % 60;
+  timerEl.textContent = `${m}:${s < 10 ? "0" : ""}${s}`;
+
+  if (time <= 0) {
+    timerEl.textContent = "Finished";
+  }
+}, 1000);
+</script>
+
+</body>
+</html>
