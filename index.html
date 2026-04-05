@@ -44,16 +44,17 @@ body {
 <body>
 
 <h2>Peg Turning Task</h2>
-<p>Please click the highlighted peg repeatedly. Each click will rotate the peg. </p>
-<p>Continue completing the task until the timer ends. </p>
-<p>Please remain on this page and do not switch tabs during the task. </p>
-<div id="timer">03:00</div>
+<p>Please click the highlighted peg repeatedly. Each click will rotate the peg.</p>
+<p>Continue completing the task until the timer ends.</p>
+<p>Please remain on this page and do not switch tabs during the task.</p>
 
+<div id="timer">03:00</div>
 <div class="grid" id="grid"></div>
 
 <script>
 let current = 0;
 let rotations = Array(8).fill(0);
+let rotationsCompleted = 0; // ✅ NEW
 
 const grid = document.getElementById("grid");
 
@@ -77,6 +78,9 @@ for (let i = 0; i < 8; i++) {
       rotations[i] = 0;
       bar.style.transform = "rotate(0deg)";
       current = (current + 1) % 8;
+
+      rotationsCompleted++; // ✅ NEW
+
       updateActive();
     }
   };
@@ -93,14 +97,21 @@ updateActive();
 let time = 180;
 const timerEl = document.getElementById("timer");
 
-setInterval(() => {
+const timer = setInterval(() => {
   time--;
+
   let m = Math.floor(time / 60);
   let s = time % 60;
   timerEl.textContent = `${m}:${s < 10 ? "0" : ""}${s}`;
 
   if (time <= 0) {
+    clearInterval(timer);
     timerEl.textContent = "Finished";
+
+    // ✅ SEND DATA TO QUALTRICS
+    window.parent.postMessage({
+      rotations: rotationsCompleted
+    }, "*");
   }
 }, 1000);
 </script>
