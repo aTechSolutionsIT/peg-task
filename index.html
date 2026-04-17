@@ -2,41 +2,93 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Peg Task</title>
 
 <style>
 body {
-  font-family: Arial;
+  font-family: Arial, sans-serif;
   text-align: center;
+  margin: 0;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+h2 {
+  font-size: 1.4rem;
+  margin-bottom: 12px;
+}
+
+p {
+  font-size: 1rem;
+  line-height: 1.4;
+  margin: 6px 0;
+}
+
+#timer {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 16px 0 20px;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(4, 80px);
-  gap: 20px;
+  grid-template-columns: repeat(4, minmax(50px, 18vw));
+  gap: 12px;
   justify-content: center;
   margin-top: 20px;
 }
 
 .peg {
-  width: 80px;
-  height: 80px;
+  width: min(18vw, 80px);
+  height: min(18vw, 80px);
+  min-width: 50px;
+  min-height: 50px;
   border: 1px solid #ccc;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  box-sizing: border-box;
 }
 
 .bar {
-  width: 10px;
-  height: 50px;
+  width: min(2.5vw, 10px);
+  height: min(12vw, 50px);
+  min-width: 6px;
+  min-height: 28px;
   background: black;
   transform: rotate(0deg);
 }
 
 .active {
   outline: 3px solid blue;
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 12px;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+  }
+
+  p {
+    font-size: 0.92rem;
+  }
+
+  #timer {
+    font-size: 1.25rem;
+  }
+
+  .grid {
+    gap: 10px;
+  }
+
+  .active {
+    outline: 2px solid blue;
+  }
 }
 </style>
 </head>
@@ -45,7 +97,7 @@ body {
 
 <h2>Peg Turning Task</h2>
 <p>Please click the highlighted peg repeatedly. Each click will rotate the peg.</p>
-<p> Click each highlighted peg 4 times to rotate it, then you can continue to the next one. </p>
+<p>Click each highlighted peg 4 times to rotate it, then continue to the next one.</p>
 <p>Continue doing the task and do not click next until the timer ends.</p>
 <p>Please remain on this page and do not switch tabs during this task.</p>
 
@@ -55,7 +107,7 @@ body {
 <script>
 let current = 0;
 let rotations = Array(8).fill(0);
-let rotationsCompleted = 0; // ✅ NEW
+let rotationsCompleted = 0;
 
 const grid = document.getElementById("grid");
 
@@ -79,9 +131,7 @@ for (let i = 0; i < 8; i++) {
       rotations[i] = 0;
       bar.style.transform = "rotate(0deg)";
       current = (current + 1) % 8;
-
-      rotationsCompleted++; // ✅ NEW
-
+      rotationsCompleted++;
       updateActive();
     }
   };
@@ -109,7 +159,6 @@ const timer = setInterval(() => {
     clearInterval(timer);
     timerEl.textContent = "Finished";
 
-    // ✅ SEND DATA TO QUALTRICS
     window.parent.postMessage({
       rotations: rotationsCompleted
     }, "*");
