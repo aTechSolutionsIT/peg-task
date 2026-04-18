@@ -111,6 +111,13 @@ let rotationsCompleted = 0;
 
 const grid = document.getElementById("grid");
 
+function sendProgress(finished = false) {
+  window.parent.postMessage({
+    rotations: rotationsCompleted,
+    taskFinished: finished
+  }, "https://atechsolutionsit.github.io");
+}
+
 for (let i = 0; i < 8; i++) {
   const peg = document.createElement("div");
   peg.className = "peg";
@@ -133,6 +140,9 @@ for (let i = 0; i < 8; i++) {
       current = (current + 1) % 8;
       rotationsCompleted++;
       updateActive();
+
+      // Send updated count to Qualtrics each time one full peg rotation is completed
+      sendProgress(false);
     }
   };
 }
@@ -159,11 +169,13 @@ const timer = setInterval(() => {
     clearInterval(timer);
     timerEl.textContent = "Finished";
 
-    window.parent.postMessage({
-      rotations: rotationsCompleted
-    }, "*");
+    // Final send: count + finished flag
+    sendProgress(true);
   }
 }, 1000);
+
+// Optional: send initial zero values on load
+sendProgress(false);
 </script>
 
 </body>
