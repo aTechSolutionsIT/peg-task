@@ -115,7 +115,7 @@ function sendProgress(finished = false) {
   window.parent.postMessage({
     rotations: rotationsCompleted,
     taskFinished: finished
-  }, "https://atechsolutionsit.github.io");
+  }, "*");
 }
 
 for (let i = 0; i < 8; i++) {
